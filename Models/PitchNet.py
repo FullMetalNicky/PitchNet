@@ -58,9 +58,9 @@ class PitchNet(nn.Module):
         l3 = self.layer3(l2)
         out = l3.flatten(1)
 
-        out = torch.cat((out, p), 1)
-
         out = self.dropout(out)
+
+        out = torch.cat((out, p), 1)
         out = self.fc(out)
         x = out[:, 0]
         y = out[:, 1]
