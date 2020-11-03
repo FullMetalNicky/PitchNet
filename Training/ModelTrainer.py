@@ -88,6 +88,7 @@ class ModelTrainer:
         with torch.no_grad():
             for batch_x, batch_p, batch_r, batch_targets in validation_generator:
                 gt_labels.extend(batch_targets.cpu().numpy())
+                batch_targets = batch_targets.to(self.device)
                 batch_x = batch_x.to(self.device)
                 batch_p = batch_p.to(self.device)
                 batch_r = batch_r.to(self.device)
