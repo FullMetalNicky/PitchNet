@@ -42,11 +42,11 @@ class PitchNet(nn.Module):
 
         self.dropout = nn.Dropout()
 
-        fcSize = fc_nodes + 1
+        fcSize = fc_nodes + 2
         self.fc = nn.Linear(fcSize, 4)
 
 
-    def forward(self, x, p):
+    def forward(self, x, p, r):
 
         conv5x5 = self.conv(x)
         btn = self.bn(conv5x5)
@@ -61,6 +61,7 @@ class PitchNet(nn.Module):
         out = self.dropout(out)
 
         out = torch.cat((out, p), 1)
+        out = torch.cat((out, r), 1)
         out = self.fc(out)
         x = out[:, 0]
         y = out[:, 1]

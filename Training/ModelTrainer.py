@@ -6,7 +6,6 @@ from Utils.ValidationUtils import MovingAverage
 #from DataVisualization import DataVisualization
 from Training.EarlyStopping import EarlyStopping
 from Utils.ValidationUtils import Metrics
-import nemo
 import logging
 import Utils.CSVUtils as utils
 
@@ -42,12 +41,13 @@ class ModelTrainer:
         train_loss_phi = MovingAverage()
 
         i = 0
-        for batch_x, batch_p, batch_targets in training_generator:
+        for batch_x, batch_p, batch_r, batch_targets in training_generator:
 
             batch_targets = batch_targets.to(self.device)
             batch_x = batch_x.to(self.device)
             batch_p = batch_p.to(self.device)
-            outputs = self.model(batch_x, batch_p)
+            batch_r = batch_r.to(self.device)
+            outputs = self.model(batch_x, batch_p, batch_r)
 
             loss_x = self.criterion(outputs[0], (batch_targets[:, 0]).view(-1, 1))
             loss_y = self.criterion(outputs[1], (batch_targets[:, 1]).view(-1, 1))
@@ -86,11 +86,12 @@ class ModelTrainer:
         y_pred = []
         gt_labels = []
         with torch.no_grad():
-            for batch_x, batch_p, batch_targets in validation_generator:
+            for batch_x, batch_p, batch_r, batch_targets in validation_generator:
                 gt_labels.extend(batch_targets.cpu().numpy())
                 batch_x = batch_x.to(self.device)
                 batch_p = batch_p.to(self.device)
-                outputs = self.model(batch_x, batch_p)
+                batch_r = batch_r.to(self.device)
+                outputs = self.model(batch_x, batch_p, batch_r)
 
                 loss_x = self.criterion(outputs[0], (batch_targets[:, 0]).view(-1, 1))
                 loss_y = self.criterion(outputs[1], (batch_targets[:, 1]).view(-1, 1))

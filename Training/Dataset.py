@@ -9,9 +9,10 @@ import sys
 class Dataset(data.Dataset):
   'Characterizes a dataset for PyTorch'
 
-  def __init__(self, x_data, p_data, labels, train=False):
+  def __init__(self, x_data, p_data, r_data, labels, train=False):
         self.x_data = torch.from_numpy(x_data)
         self.p_data = torch.from_numpy(p_data)
+        self.r_data = torch.from_numpy(r_data)
         self.labels = torch.from_numpy(labels)
         length = len(self.x_data)
         self.list_IDs = range(0, length)
@@ -29,6 +30,7 @@ class Dataset(data.Dataset):
 
         X = self.x_data[ID]
         P = self.p_data[ID]
+        R = self.r_data[ID]
         y = self.labels[ID]
 
         if self.train == True:
@@ -37,4 +39,4 @@ class Dataset(data.Dataset):
                 y[1] = -y[1]  # Y
                 y[3] = -y[3]  # Relative YAW
 
-        return X, P, y
+        return X, P, R, y

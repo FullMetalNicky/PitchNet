@@ -61,6 +61,10 @@ class DataProcessor:
 
         p_train = train_set['p'].values
         p_train = np.vstack(p_train[:]).astype(np.float32)
+        vfov = 65.65
+        p_train = -(0.5*(160 - h) - p_train) * vfov / h
+
+        r_train = np.zeros((size, 1)).astype(np.float32)
 
 
         ix_val, ix_tr = np.split(np.random.permutation(train_set.shape[0]), [n_val])
@@ -70,17 +74,18 @@ class DataProcessor:
         y_train = y_train[ix_tr, :]
         p_validation = p_train[ix_val, :]
         p_train = p_train[ix_tr, :]
+        r_validation = r_train[ix_val, :]
+        r_train = r_train[ix_tr, :]
 
         shape_ = len(x_train)
 
         sel_idx = random.sample(range(0, shape_), k=(size-n_val))
-
-        #sel_idx = random.sample(range(0, shape_), k=50000)
         x_train = x_train[sel_idx, :]
         y_train = y_train[sel_idx, :]
         p_train = p_train[sel_idx, :]
+        r_train = r_train[sel_idx, :]
 
-        return [x_train, x_validation, p_train, p_validation, y_train, y_validation]
+        return [x_train, x_validation, p_train, p_validation,  r_train, r_validation, y_train, y_validation]
 
     @staticmethod
     def ProcessTestData(testPath, isExtended=False):
@@ -102,7 +107,7 @@ class DataProcessor:
 
         test_set = pd.read_pickle(testPath)
         logging.info('[DataProcessor] test shape: ' + str(test_set.shape))
-        h, w, c = DataManipulator.GetSizeDataFromDataFrame(test_set)
+        h, w, c = DataProcessor.GetSizeDataFromDataFrame(test_set)
 
         x_test = test_set['x'].values
         x_test = np.vstack(x_test[:]).astype(np.float32)
