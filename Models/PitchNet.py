@@ -16,9 +16,9 @@ class PitchNet(nn.Module):
         super(PitchNet, self).__init__()
 
         if isGray ==True:
-            self.name = "PenguiNet"
+            self.name = "PitchNet"
         else:
-            self.name = "PenguiNetRGB"
+            self.name = "PitchNetRGB"
         self.inplanes = c
         self.width = w
         self.height = h
