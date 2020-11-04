@@ -117,7 +117,7 @@ class DataProcessor:
         p_test = test_set['p'].values
         p_test = np.vstack(p_test[:]).astype(np.float32)
         vfov = 65.65
-        p_test = -((80 - h) - p_test) * vfov / h
+        p_test = -(0.5*(160 - h) - p_test) * vfov / h
 
         r_test = np.zeros((size, 1)).astype(np.float32)
 
