@@ -107,25 +107,28 @@ class DataProcessor:
 
         test_set = pd.read_pickle(testPath)
         logging.info('[DataProcessor] test shape: ' + str(test_set.shape))
+        size = test_set.shape[0]
         h, w, c = DataProcessor.GetSizeDataFromDataFrame(test_set)
 
         x_test = test_set['x'].values
         x_test = np.vstack(x_test[:]).astype(np.float32)
         x_test = np.reshape(x_test, (-1, h, w, c))
 
+        p_test = test_set['p'].values
+        p_test = np.vstack(p_test[:]).astype(np.float32)
+        vfov = 65.65
+        p_test = -((80 - h) - p_test) * vfov / h
+
+        r_test = np.zeros((size, 1)).astype(np.float32)
 
         x_test = np.swapaxes(x_test, 1, 3)
         x_test = np.swapaxes(x_test, 2, 3)
         y_test = test_set['y'].values
         y_test = np.vstack(y_test[:]).astype(np.float32)
 
-        if isExtended ==True:
-            z_test = test_set['z'].values
-            z_test = np.vstack(z_test[:]).astype(np.float32)
-            return [x_test, y_test, z_test]
 
 
-        return [x_test, y_test]
+        return [x_test, p_test,r_test, y_test]
 
 
     @staticmethod
